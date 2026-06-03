@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>重點2：SERS 原理 — 填充題</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:16px}
+.container{max-width:600px;margin:0 auto}
+.header{text-align:center;padding:20px 0 10px}
+.kicker{font-size:12px;letter-spacing:0.15em;color:#c084fc;text-transform:uppercase;margin-bottom:6px;font-family:monospace}
+h1{font-size:21px;font-weight:900;color:#fff;margin-bottom:4px}
+.subtitle{font-size:13px;color:#94a3b8;margin-bottom:20px}
+.progress-bar{height:4px;background:#1e293b;border-radius:2px;margin-bottom:16px}
+.progress-fill{height:100%;background:linear-gradient(90deg,#c084fc,#38bdf8);border-radius:2px;transition:width .4s}
+.score-badge{display:inline-block;background:#1e293b;border:1px solid #334155;border-radius:20px;padding:4px 14px;font-size:13px;color:#94a3b8;margin-bottom:16px}
+.card{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:20px;margin-bottom:14px}
+.q-num{font-size:11px;color:#c084fc;font-family:monospace;letter-spacing:0.1em;margin-bottom:8px}
+.q-text{font-size:16px;font-weight:700;line-height:1.6;color:#f1f5f9;margin-bottom:14px}
+.blank-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.blank-input{background:#0f172a;border:2px solid #334155;border-radius:8px;padding:8px 12px;font-size:15px;color:#e2e8f0;width:160px;transition:border-color .2s;outline:none;font-family:inherit}
+.blank-input:focus{border-color:#c084fc}
+.blank-input.ok{border-color:#22c55e;background:rgba(34,197,94,0.08)}
+.blank-input.bad{border-color:#ef4444;background:rgba(239,68,68,0.08)}
+.hint{font-size:13px;color:#64748b;font-style:italic}
+.check-btn{padding:10px 20px;background:#c084fc;border:none;border-radius:8px;font-size:14px;font-weight:700;color:#0f172a;cursor:pointer;min-height:40px;transition:opacity .2s}
+.check-btn:hover{opacity:.85}
+.feedback{margin-top:10px;padding:10px 14px;border-radius:8px;font-size:13px;line-height:1.5;display:none}
+.feedback.ok{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#86efac}
+.feedback.bad{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);color:#fca5a5}
+.next-btn{display:none;width:100%;margin-top:12px;padding:12px;background:#c084fc;border:none;border-radius:10px;font-size:15px;font-weight:700;color:#0f172a;cursor:pointer}
+.result-card{display:none;text-align:center;background:#1e293b;border:1px solid #334155;border-radius:16px;padding:28px 20px}
+.restart-btn{padding:12px 32px;background:#c084fc;border:none;border-radius:10px;font-size:15px;font-weight:700;color:#0f172a;cursor:pointer;margin-top:12px}
+.qr-section{text-align:center;margin-top:20px;padding:14px;background:#1e293b;border-radius:12px;border:1px solid #334155}
+.qr-section p{font-size:12px;color:#64748b;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="kicker">SERS · 形成性評量</div>
+    <h1>重點2：SERS 表面增強拉曼原理</h1>
+    <div class="subtitle">填充題 · 4 題 · 食品化學研究生版</div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="pbar" style="width:0%"></div></div>
+  <div class="score-badge">得分：<span id="score">0</span> / <span id="total">4</span> ｜ 第 <span id="qnum">1</span> 題</div>
+  <div id="game-area"></div>
+  <div class="result-card" id="result">
+    <div style="font-size:48px;margin-bottom:8px" id="res-emoji">🎉</div>
+    <h2 id="res-title" style="font-size:22px;font-weight:900;color:#fff;margin-bottom:6px">完成！</h2>
+    <p id="res-msg" style="font-size:14px;color:#94a3b8;margin-bottom:16px"></p>
+    <button class="restart-btn" onclick="restart()">重新挑戰</button>
+  </div>
+  <div class="qr-section">
+    <img id="qr-img" width="120" height="120" alt="QR Code" style="border-radius:8px">
+    <p>掃描開啟此遊戲</p>
+  </div>
+</div>
+<script>
+const Qs = [
+  {q:"SERS 的中文全名是「___增強拉曼光譜」，英文縮寫為 SERS。",
+   blanks:[{id:"b1",ans:["表面","Surface-Enhanced","表面增強"],label:"(中文或英文)"}],
+   exp:"SERS = Surface-Enhanced Raman Spectroscopy，中文為表面增強拉曼光譜。分析物貼近奈米金屬表面時，局部電磁場大幅增強，把訊號放大。"},
+  {q:"SERS 訊號增益的數量級範圍是 10 的 ___ 次方到 10 的 ___ 次方倍。",
+   blanks:[{id:"b1",ans:["7","七"],label:"（下限次方）"},{id:"b2",ans:["14","十四"],label:"（上限次方）"}],
+   exp:"研究文獻（PMC11989198, 2025）記載 SERS 訊號強度是普通 Raman 的 10⁷ ~ 10¹⁴ 倍，電磁增強機制主導，增強因子可達 10¹⁰~10¹¹。"},
+  {q:"SERS 增強機制中，電磁增強（EM enhancement）發生在奈米顆粒之間的間隙，稱為「___」，這裡的電場極度集中。",
+   blanks:[{id:"b1",ans:["熱點","hot spot","Hot Spot","hotspot"],label:"（英文或中文）"}],
+   exp:"熱點（Hot Spot）是兩個奈米顆粒間隙處電磁場集中的區域。當分析物分子進入熱點，SERS 增強因子可達 10¹⁰~10¹¹。這是 SERS 最主要的增強機制。"},
+  {q:"SERS 基板重現性的量化指標是 RSD（相對標準偏差）。銀奈米星基板在 20 個測量點的 spot-to-spot RSD 範圍約為 ___% 到 ___% 之間。",
+   blanks:[{id:"b1",ans:["7","~7","約7"],label:"（下限%）"},{id:"b2",ans:["27","~27","約27"],label:"（上限%）"}],
+   exp:"來源：PMC10820608（MDPI Sensors, 2024）。RSD 7~27% 代表熱點分布不均造成測量值高度變異，這是 SERS 定量應用的主要挑戰。比較：HPLC/ELISA 通常 RSD <5%。"},
+];
+let cur=0,score=0;
+function normalize(s){return s.trim().toLowerCase().replace(/\s/g,'')}
+function render(){
+  if(cur>=Qs.length){showResult();return}
+  const q=Qs[cur];
+  document.getElementById('qnum').textContent=cur+1;
+  document.getElementById('pbar').style.width=(cur/Qs.length*100)+'%';
+  let bhtml=q.blanks.map(b=>`<input id="${b.id}" class="blank-input" placeholder="${b.label}" autocomplete="off">`).join(' ');
+  let html=`<div class="card">
+    <div class="q-num">Q ${cur+1} / ${Qs.length}</div>
+    <div class="q-text">${q.q}</div>
+    <div class="blank-row">${bhtml}</div>
+    <button class="check-btn" onclick="checkAns()">確認答案</button>
+    <div class="feedback" id="fb"></div>
+    <button class="next-btn" id="nb" onclick="next()">下一題 →</button>
+  </div>`;
+  document.getElementById('game-area').innerHTML=html;
+  document.querySelectorAll('.blank-input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')checkAns()}));
+}
+function checkAns(){
+  const q=Qs[cur];
+  let correct=true;
+  q.blanks.forEach(b=>{
+    const el=document.getElementById(b.id);
+    const val=normalize(el.value);
+    const ok=b.ans.some(a=>normalize(a)===val);
+    el.classList.add(ok?'ok':'bad');
+    el.disabled=true;
+    if(!ok)correct=false;
+  });
+  const fb=document.getElementById('fb');
+  const nb=document.getElementById('nb');
+  if(correct){
+    fb.className='feedback ok';
+    fb.innerHTML='✅ 完全正確！'+q.exp;
+    score++;
+    document.getElementById('score').textContent=score;
+  } else {
+    let ans=q.blanks.map(b=>'<strong>'+b.ans[0]+'</strong>').join(' / ');
+    fb.className='feedback bad';
+    fb.innerHTML='❌ 正確答案：'+ans+'<br>'+q.exp;
+  }
+  fb.style.display='block';
+  nb.style.display='block';
+  document.querySelector('.check-btn').disabled=true;
+}
+function next(){cur++;render()}
+function showResult(){
+  document.getElementById('game-area').innerHTML='';
+  document.getElementById('pbar').style.width='100%';
+  const r=document.getElementById('result');
+  r.style.display='block';
+  const pct=score/Qs.length;
+  document.getElementById('res-emoji').textContent=pct>=.75?'⚡':pct>=.5?'😊':'💪';
+  document.getElementById('res-title').textContent='答對 '+score+' / '+Qs.length;
+  document.getElementById('res-msg').textContent=pct>=.75?'太強了！SERS 原理與數字都記熟了！':pct>=.5?'不錯！再複習一下 EF 數量級和 RSD 的意義吧。':'加油！建議重看投影片第 4 頁，特別注意 10⁷~10¹⁴ 的範圍與熱點概念。';
+}
+function restart(){cur=0;score=0;document.getElementById('score').textContent=0;document.getElementById('result').style.display='none';render()}
+render();
+document.getElementById('qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=120x120&data='+encodeURIComponent(window.location.href);
+</script>
+</body>
+</html>

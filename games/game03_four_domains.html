@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>重點3：四大應用域 — 配對題</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:16px}
+.container{max-width:640px;margin:0 auto}
+.header{text-align:center;padding:20px 0 10px}
+.kicker{font-size:12px;letter-spacing:0.15em;color:#34d399;text-transform:uppercase;margin-bottom:6px;font-family:monospace}
+h1{font-size:21px;font-weight:900;color:#fff;margin-bottom:4px}
+.subtitle{font-size:13px;color:#94a3b8;margin-bottom:16px}
+.instructions{background:#162032;border:1px solid #334155;border-radius:10px;padding:12px 16px;font-size:13px;color:#94a3b8;margin-bottom:16px;line-height:1.5}
+.game-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.col-header{font-family:monospace;font-size:11px;letter-spacing:0.12em;color:#64748b;text-align:center;padding-bottom:8px;text-transform:uppercase}
+.items-col{display:flex;flex-direction:column;gap:8px}
+.item{background:#1e293b;border:2px solid #334155;border-radius:10px;padding:10px 12px;font-size:14px;cursor:pointer;transition:all .2s;min-height:44px;display:flex;align-items:center;line-height:1.4;user-select:none}
+.item:hover{border-color:#34d399;background:#162032}
+.item.selected{border-color:#34d399;background:rgba(52,211,153,0.12);color:#6ee7b7}
+.item.matched-ok{border-color:#22c55e;background:rgba(34,197,94,0.12);color:#86efac;cursor:default}
+.item.matched-bad{border-color:#ef4444;background:rgba(239,68,68,0.10);color:#fca5a5;animation:shake .3s}
+.item.dimmed{opacity:.4;cursor:default}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.score-row{display:flex;gap:12px;margin-bottom:16px;align-items:center}
+.score-badge{display:inline-block;background:#1e293b;border:1px solid #334155;border-radius:20px;padding:4px 14px;font-size:13px;color:#94a3b8}
+.progress-bar{flex:1;height:4px;background:#1e293b;border-radius:2px}
+.progress-fill{height:100%;background:linear-gradient(90deg,#34d399,#38bdf8);border-radius:2px;transition:width .4s}
+.feedback-toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-60px);background:#1e293b;border-radius:10px;padding:10px 20px;font-size:14px;color:#e2e8f0;border:1px solid #334155;transition:transform .3s;z-index:100;text-align:center;max-width:90vw}
+.feedback-toast.show{transform:translateX(-50%) translateY(0)}
+.result-card{display:none;text-align:center;background:#1e293b;border:1px solid #334155;border-radius:16px;padding:28px 20px;margin-top:8px}
+.restart-btn{padding:12px 32px;background:#34d399;border:none;border-radius:10px;font-size:15px;font-weight:700;color:#0f172a;cursor:pointer;margin-top:12px}
+.qr-section{text-align:center;margin-top:20px;padding:14px;background:#1e293b;border-radius:12px;border:1px solid #334155}
+.qr-section p{font-size:12px;color:#64748b;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="kicker">SERS Applications · 形成性評量</div>
+    <h1>重點3：SERS 四大食品安全應用域</h1>
+    <div class="subtitle">配對題 · 左欄選應用域，右欄選對應範例</div>
+  </div>
+  <div class="instructions">📌 點選左欄的「應用域」，再點選右欄對應的「典型範例」完成配對。全部配對正確即可過關！</div>
+  <div class="score-row">
+    <div class="score-badge">已配對 <span id="matched">0</span> / 4</div>
+    <div class="progress-bar"><div class="progress-fill" id="pbar" style="width:0%"></div></div>
+  </div>
+  <div class="game-grid">
+    <div>
+      <div class="col-header">應用域</div>
+      <div class="items-col" id="left"></div>
+    </div>
+    <div>
+      <div class="col-header">典型範例 / 說明</div>
+      <div class="items-col" id="right"></div>
+    </div>
+  </div>
+  <div id="feedback-toast" class="feedback-toast"></div>
+  <div class="result-card" id="result">
+    <div style="font-size:48px;margin-bottom:8px">🏆</div>
+    <h2 style="font-size:22px;font-weight:900;color:#fff;margin-bottom:6px">全部配對正確！</h2>
+    <p style="font-size:14px;color:#94a3b8;margin-bottom:6px">SERS 四大應用域已全部掌握。</p>
+    <p style="font-size:13px;color:#64748b">記住：每個域都有其特定挑戰，透包裝是拉曼的獨特優勢。</p>
+    <button class="restart-btn" onclick="restart()">重新挑戰</button>
+  </div>
+  <div class="qr-section">
+    <img id="qr-img" width="120" height="120" alt="QR Code" style="border-radius:8px">
+    <p>掃描開啟此遊戲</p>
+  </div>
+</div>
+<script>
+const pairs = [
+  {id:1, left:"① 汙染物偵測", right:"農藥 imidacloprid LOD 9.4×10⁻⁸ mg/mL（比 EU MRL 靈敏約 5000 倍）；黴菌毒素 DON 偵測"},
+  {id:2, left:"② 病原菌鑑別", right:"Raman + LDA 鑑別 E.coli / S.aureus / S.typhimurium，準確率 95.65%（⚠️ 純培養條件）"},
+  {id:3, left:"③ 食品鑑別 / QC", right:"橄欖油摻大豆油 Ridge Regression R²=0.984；蜂蜜來源鑑別"},
+  {id:4, left:"④ 包材安全", right:"透過透明包裝掃描，偵測塑化劑遷移至食品，不需開封"}
+];
+let selLeft=null,selRight=null,matched=0;
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr}
+function render(){
+  const lOrder=shuffle([...pairs]);
+  const rOrder=shuffle([...pairs]);
+  const lCol=document.getElementById('left');
+  const rCol=document.getElementById('right');
+  lCol.innerHTML='';rCol.innerHTML='';
+  lOrder.forEach(p=>{
+    const d=document.createElement('div');
+    d.className='item';d.dataset.id=p.id;d.dataset.side='left';
+    d.textContent=p.left;
+    d.addEventListener('click',()=>pick(d,'left'));
+    lCol.appendChild(d);
+  });
+  rOrder.forEach(p=>{
+    const d=document.createElement('div');
+    d.className='item';d.dataset.id=p.id;d.dataset.side='right';
+    d.textContent=p.right;
+    d.addEventListener('click',()=>pick(d,'right'));
+    rCol.appendChild(d);
+  });
+}
+function pick(el,side){
+  if(el.classList.contains('matched-ok')||el.classList.contains('dimmed'))return;
+  if(side==='left'){
+    document.querySelectorAll('.item[data-side="left"].selected').forEach(e=>e.classList.remove('selected'));
+    selLeft=el;el.classList.add('selected');
+  } else {
+    document.querySelectorAll('.item[data-side="right"].selected').forEach(e=>e.classList.remove('selected'));
+    selRight=el;el.classList.add('selected');
+  }
+  if(selLeft&&selRight)check();
+}
+function check(){
+  const lid=parseInt(selLeft.dataset.id);
+  const rid=parseInt(selRight.dataset.id);
+  if(lid===rid){
+    selLeft.classList.remove('selected');selRight.classList.remove('selected');
+    selLeft.classList.add('matched-ok');selRight.classList.add('matched-ok');
+    showToast('✅ 正確配對！');
+    matched++;
+    document.getElementById('matched').textContent=matched;
+    document.getElementById('pbar').style.width=(matched/4*100)+'%';
+    if(matched===4)setTimeout(()=>{document.getElementById('result').style.display='block'},600);
+  } else {
+    selLeft.classList.add('matched-bad');selRight.classList.add('matched-bad');
+    showToast('❌ 再想想！試試其他組合');
+    setTimeout(()=>{
+      selLeft.classList.remove('matched-bad','selected');
+      selRight.classList.remove('matched-bad','selected');
+    },700);
+  }
+  selLeft=null;selRight=null;
+}
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('feedback-toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),1800);
+}
+function restart(){matched=0;selLeft=null;selRight=null;document.getElementById('matched').textContent=0;document.getElementById('pbar').style.width='0%';document.getElementById('result').style.display='none';render()}
+render();
+document.getElementById('qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=120x120&data='+encodeURIComponent(window.location.href);
+</script>
+</body>
+</html>

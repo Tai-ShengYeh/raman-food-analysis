@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>拉曼光譜在食品分析的應用 — 教材中心</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans TC',sans-serif;background:linear-gradient(135deg,#ffffff 0%,#e0f2fe 100%);color:#0f172a;min-height:100vh;padding:24px}
+.container{max-width:860px;margin:0 auto}
+.header{text-align:center;padding:36px 0 24px}
+.kicker{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.18em;color:#0284c7;text-transform:uppercase;margin-bottom:10px}
+h1{font-size:clamp(28px,5vw,44px);font-weight:900;line-height:1.15;margin-bottom:12px;
+  background:linear-gradient(135deg,#0f172a 0%,#0284c7 55%,#e11d48 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.subtitle{font-size:16px;color:#475569;line-height:1.6}
+.stat-row{display:flex;gap:16px;justify-content:center;margin-top:24px;flex-wrap:wrap}
+.stat{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:14px;padding:14px 22px;box-shadow:0 2px 10px rgba(0,0,0,0.05);text-align:center}
+.stat .v{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:900;color:#0284c7}
+.stat .l{font-size:12px;color:#64748b;margin-top:4px}
+.section{margin-top:36px}
+.section-title{font-size:14px;font-family:'JetBrains Mono',monospace;letter-spacing:0.12em;color:#64748b;text-transform:uppercase;margin-bottom:16px;padding-left:4px}
+.big-card{background:#fff;border:1px solid rgba(0,0,0,0.1);border-radius:18px;padding:28px 32px;box-shadow:0 4px 16px rgba(0,0,0,0.06);text-decoration:none;color:inherit;display:flex;align-items:center;gap:24px;transition:all .2s;cursor:pointer}
+.big-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(2,132,199,0.15);border-color:#0284c7}
+.big-card .icon{font-size:3.2rem;flex-shrink:0}
+.big-card .info{flex:1}
+.big-card .info h2{font-size:22px;font-weight:900;margin-bottom:6px}
+.big-card .info p{font-size:14px;color:#64748b;line-height:1.5}
+.big-card .arrow{font-size:1.8rem;color:#0284c7}
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.game-card{background:#fff;border:1px solid rgba(0,0,0,0.1);border-radius:14px;padding:18px 20px;text-decoration:none;color:inherit;transition:all .2s;display:flex;align-items:center;gap:14px}
+.game-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,0.1);border-color:#0284c7}
+.game-card .gi{font-size:1.8rem;flex-shrink:0}
+.game-card .gt{font-size:15px;font-weight:700;margin-bottom:3px}
+.game-card .gty{font-family:'JetBrains Mono',monospace;font-size:11px;color:#0284c7}
+.footer{text-align:center;margin-top:40px;padding:24px;background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,0.08)}
+.footer img{border-radius:10px;margin:8px 0}
+.footer .note{font-size:13px;color:#64748b;margin-bottom:8px}
+.source-note{margin-top:14px;padding:14px 18px;background:rgba(2,132,199,0.05);border:1px solid rgba(2,132,199,0.15);border-radius:12px;font-size:12px;color:#64748b;line-height:1.7;text-align:left}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="kicker">食品分析 · Food Analysis · Teaching Materials</div>
+    <h1>拉曼光譜在食品分析的應用</h1>
+    <p class="subtitle">Raman Spectroscopy in Food Analysis<br>互動式教學投影片 + 形成性評量小遊戲 · 食品化學研究生版</p>
+    <div class="stat-row">
+      <div class="stat"><div class="v">9</div><div class="l">投影片頁數</div></div>
+      <div class="stat"><div class="v">5</div><div class="l">互動小遊戲</div></div>
+      <div class="stat"><div class="v">7</div><div class="l">引用文獻</div></div>
+      <div class="stat"><div class="v">107</div><div class="l">研究 agents</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📊 教學投影片 Teaching Slides</div>
+    <a href="slides.html" class="big-card">
+      <div class="icon">🔬</div>
+      <div class="info">
+        <h2>拉曼光譜食品分析 · 互動投影片</h2>
+        <p>9 頁完整教材：拉曼原理、SERS 熱點增強、四大應用域、定量數據、可攜式拉曼、現實挑戰，附完整引用文獻。鍵盤 ← → 切頁。</p>
+      </div>
+      <div class="arrow">→</div>
+    </a>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🎮 形成性評量小遊戲 Mini-Games</div>
+    <div class="games-grid">
+      <a href="games/game01_raman_vs_ftir.html" class="game-card">
+        <div class="gi">🔬</div><div><div class="gt">拉曼 vs FTIR</div><div class="gty">選擇題 · 4題</div></div>
+      </a>
+      <a href="games/game02_sers_principle.html" class="game-card">
+        <div class="gi">⚡</div><div><div class="gt">SERS 原理</div><div class="gty">填充題 · 4題</div></div>
+      </a>
+      <a href="games/game03_four_domains.html" class="game-card">
+        <div class="gi">🗂️</div><div><div class="gt">四大應用域</div><div class="gty">配對題 · 4對</div></div>
+      </a>
+      <a href="games/game04_numbers.html" class="game-card">
+        <div class="gi">📊</div><div><div class="gt">數字大挑戰</div><div class="gty">是非題 · 5題</div></div>
+      </a>
+      <a href="games/game05_challenges.html" class="game-card">
+        <div class="gi">🧠</div><div><div class="gt">三大挑戰</div><div class="gty">批判思考 · 4題</div></div>
+      </a>
+      <a href="games/index.html" class="game-card" style="border-color:#0284c7;background:rgba(2,132,199,0.04)">
+        <div class="gi">📋</div><div><div class="gt">遊戲總索引</div><div class="gty">All games + QR</div></div>
+      </a>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="note">掃描 QR Code 在手機開啟此教材中心</div>
+    <img id="qr-img" width="140" height="140" alt="QR Code">
+    <div class="source-note">
+      📚 事實來源（deep research 驗證，107 agents · 9 confirmed · 14 refuted）：
+      PMC10707828 (2023) · PMC11989198 (2025) · PMC11547707 (MDPI Nanomaterials, 2024) ·
+      PMC10304463 (Food Chemistry, 2022) · PMC10820608 (MDPI Sensors, 2024) · PMC11593597 (2024) ·
+      S0924224425001311 (Trends Food Sci Technol, 2025)。
+      被 adversarial verification 否決的聲稱已全部排除。
+    </div>
+    <p style="font-size:11px;color:#94a3b8;margin-top:12px">拉曼光譜食品分析 · 食品化學研究生教材 · 2026</p>
+  </div>
+</div>
+<script>
+document.getElementById('qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=140x140&data='+encodeURIComponent(window.location.href);
+</script>
+</body>
+</html>

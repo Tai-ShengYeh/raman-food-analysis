@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>重點5：三大挑戰 — 選擇題</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:16px}
+.container{max-width:600px;margin:0 auto}
+.header{text-align:center;padding:20px 0 10px}
+.kicker{font-size:12px;letter-spacing:0.15em;color:#f43f5e;text-transform:uppercase;margin-bottom:6px;font-family:monospace}
+h1{font-size:21px;font-weight:900;color:#fff;margin-bottom:4px}
+.subtitle{font-size:13px;color:#94a3b8;margin-bottom:18px}
+.progress-bar{height:4px;background:#1e293b;border-radius:2px;margin-bottom:14px}
+.progress-fill{height:100%;background:linear-gradient(90deg,#f43f5e,#fb923c);border-radius:2px;transition:width .4s}
+.score-badge{display:inline-block;background:#1e293b;border:1px solid #334155;border-radius:20px;padding:4px 14px;font-size:13px;color:#94a3b8;margin-bottom:16px}
+.question-card{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:20px;margin-bottom:14px}
+.q-num{font-size:11px;color:#f43f5e;font-family:monospace;letter-spacing:0.1em;margin-bottom:8px}
+.q-text{font-size:16px;font-weight:700;line-height:1.5;color:#f1f5f9;margin-bottom:16px}
+.options{display:flex;flex-direction:column;gap:10px}
+.opt-btn{background:#0f172a;border:1.5px solid #334155;border-radius:10px;padding:12px 16px;font-size:14px;color:#cbd5e1;text-align:left;cursor:pointer;transition:all .2s;min-height:44px;line-height:1.4}
+.opt-btn:hover:not(:disabled){border-color:#f43f5e;color:#e2e8f0;background:#1a0f1a}
+.opt-btn.correct{border-color:#22c55e;background:rgba(34,197,94,0.12);color:#86efac}
+.opt-btn.wrong{border-color:#ef4444;background:rgba(239,68,68,0.10);color:#fca5a5}
+.opt-btn.reveal{border-color:#22c55e;background:rgba(34,197,94,0.06);color:#86efac;opacity:.8}
+.feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:13px;line-height:1.55;display:none}
+.feedback.ok{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#86efac}
+.feedback.bad{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);color:#fca5a5}
+.next-btn{display:none;width:100%;margin-top:12px;padding:12px;background:#f43f5e;border:none;border-radius:10px;font-size:15px;font-weight:700;color:#fff;cursor:pointer}
+.result-card{display:none;text-align:center;background:#1e293b;border:1px solid #334155;border-radius:16px;padding:28px 20px}
+.final-msg{background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.25);border-radius:10px;padding:14px;margin-top:16px;font-size:13px;color:#fda4af;line-height:1.6;text-align:left}
+.restart-btn{padding:12px 32px;background:#f43f5e;border:none;border-radius:10px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin-top:14px}
+.qr-section{text-align:center;margin-top:20px;padding:14px;background:#1e293b;border-radius:12px;border:1px solid #334155}
+.qr-section p{font-size:12px;color:#64748b;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="kicker">Critical Thinking · 形成性評量</div>
+    <h1>重點5：SERS 三大挑戰</h1>
+    <div class="subtitle">選擇題 · 4 題 · 批判性思考訓練</div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="pbar" style="width:0%"></div></div>
+  <div class="score-badge">得分：<span id="score">0</span> / <span id="total">4</span> ｜ 第 <span id="qnum">1</span> 題</div>
+  <div id="game-area"></div>
+  <div class="result-card" id="result">
+    <div style="font-size:48px;margin-bottom:8px" id="res-emoji">🧠</div>
+    <h2 id="res-title" style="font-size:22px;font-weight:900;color:#fff;margin-bottom:6px">完成！</h2>
+    <p id="res-msg" style="font-size:14px;color:#94a3b8"></p>
+    <div class="final-msg">💡 帶走這個習慣：讀到 SERS 的超高靈敏度數字，先問三個問題：<br>① 這是在食品基質測的嗎？<br>② RSD 是多少（重現性好嗎）？<br>③ 監管機構有認可這個方法嗎？</div>
+    <button class="restart-btn" onclick="restart()">重新挑戰</button>
+  </div>
+  <div class="qr-section">
+    <img id="qr-img" width="120" height="120" alt="QR Code" style="border-radius:8px">
+    <p>掃描開啟此遊戲</p>
+  </div>
+</div>
+<script>
+const Qs=[
+  {q:"一篇 SERS 論文宣稱在食品中偵測到某農藥的 LOD 只有 10⁻¹⁰ mg/mL。作為食品化學研究生，你最應該先確認什麼？",
+   opts:["這個 LOD 是用什麼品牌的拉曼儀測的","這個 LOD 是在純緩衝液測得，還是在真實食品基質（如果汁、麵粉）中測得","這個農藥是哪個廠商生產的","論文作者的機構排名如何"],
+   ans:1,exp:"食品基質干擾是 SERS 最大的實務挑戰。絕大多數 LOD 在乾淨緩衝液中測得，食品基質中的競爭吸附分子、螢光物質可使靈敏度降低 1~3 個數量級。超高靈敏度數字要先問：基質是什麼？"},
+  {q:"SERS 銀奈米星基板在 20 個測量點的 RSD 達 7~27%。這個數字對於食品安全監測意味著什麼？",
+   opts:["SERS 完全不適合食品分析","RSD 7~27% 很優秀，比 HPLC 更準確","SERS 目前更適合定性篩選（陽性/陰性）而非精確定量；確認結果還需搭配 HPLC/ELISA","只要換用金奈米顆粒，RSD 問題立即解決"],
+   ans:2,exp:"HPLC/ELISA 的 RSD 通常 <5%。SERS 的 7~27% 代表熱點分布不均導致高度測量變異，現階段最適合快篩用途，篩選到陽性樣品後再送實驗室確認。未來改善基板製程可提升重現性。"},
+  {q:"如果你是食品安全執法機關的科學顧問，現在有廠商宣稱用可攜式 SERS 儀器測定某批蔬菜無農藥殘留，可作為出口放行依據。你的建議是什麼？",
+   opts:["立刻接受，因為 SERS 靈敏度超過 EU MRL 5000 倍，完全夠用","SERS 數據目前不能作為官方執法的唯一依據，需要 HPLC 或 ELISA 的確認結果","可攜式儀器比桌上型不準，應更換設備","不需要額外確認，只要 LOD 夠低就可以"],
+   ans:1,exp:"EU、FDA、Codex Alimentarius 目前均沒有 SERS 或可攜式拉曼的官方數據驗收框架。SERS 的定位是「快速篩選工具」，必須搭配已驗證的參考方法（HPLC、ELISA）進行確認，不能單獨作為執法依據。"},
+  {q:"以下哪項陳述最準確地描述 Raman + 機器學習（如 LDA）鑑別食源性病原菌的現況？",
+   opts:["在純培養條件下已達 ~96% 準確率，可直接部署到食品工廠使用","在純培養條件下可鑑別多種病原菌（LDA 準確率 ~95.65%），但在食品基質中的效果尚未同等驗證，是尚待克服的重大挑戰","Raman 無法區分不同細菌，因為細菌光譜太相似","加了機器學習後，食品基質干擾問題就自動解決了"],
+   ans:1,exp:"PMC10707828 和 PMC11593597 的實驗使用的是純培養菌株（非食品樣品）。真實食品基質（肉汁、蔬果汁）含有大量干擾物，病原菌的 Raman 訊號會受到嚴重遮蔽。這是病原菌鑑別從實驗室走到現場的主要障礙。"},
+];
+let cur=0,score=0;
+function render(){
+  if(cur>=Qs.length){showResult();return}
+  const q=Qs[cur];
+  document.getElementById('qnum').textContent=cur+1;
+  document.getElementById('pbar').style.width=(cur/Qs.length*100)+'%';
+  let html=`<div class="question-card">
+    <div class="q-num">Q ${cur+1} / ${Qs.length}</div>
+    <div class="q-text">${q.q}</div>
+    <div class="options">`;
+  q.opts.forEach((o,i)=>{html+=`<button class="opt-btn" onclick="pick(${i})">${o}</button>`});
+  html+=`</div><div class="feedback" id="fb"></div>
+  <button class="next-btn" id="nb" onclick="next()">${cur===Qs.length-1?'查看結果 →':'下一題 →'}</button></div>`;
+  document.getElementById('game-area').innerHTML=html;
+}
+function pick(i){
+  const q=Qs[cur];
+  const btns=document.querySelectorAll('.opt-btn');
+  btns.forEach(b=>b.disabled=true);
+  const fb=document.getElementById('fb'),nb=document.getElementById('nb');
+  if(i===q.ans){
+    btns[i].classList.add('correct');
+    fb.className='feedback ok';fb.innerHTML='✅ 正確！'+q.exp;
+    score++;document.getElementById('score').textContent=score;
+  } else {
+    btns[i].classList.add('wrong');btns[q.ans].classList.add('reveal');
+    fb.className='feedback bad';fb.innerHTML='❌ 正確答案：<strong>'+q.opts[q.ans]+'</strong><br>'+q.exp;
+  }
+  fb.style.display='block';nb.style.display='block';
+}
+function next(){cur++;render()}
+function showResult(){
+  document.getElementById('game-area').innerHTML='';
+  document.getElementById('pbar').style.width='100%';
+  const r=document.getElementById('result');r.style.display='block';
+  const pct=score/Qs.length;
+  document.getElementById('res-emoji').textContent=pct>=.75?'🧠':pct>=.5?'💡':'📚';
+  document.getElementById('res-title').textContent='答對 '+score+' / '+Qs.length;
+  document.getElementById('res-msg').textContent=pct>=.75?'批判性思考能力優秀！對 SERS 的實際限制理解深刻。':pct>=.5?'不錯！再複習三大挑戰（基質干擾/重現性/監管框架）吧。':'建議重看投影片第 8 頁的三大瓶頸，這是食品科學家必備的科學素養。';
+}
+function restart(){cur=0;score=0;document.getElementById('score').textContent=0;document.getElementById('result').style.display='none';render()}
+render();
+document.getElementById('qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=120x120&data='+encodeURIComponent(window.location.href);
+</script>
+</body>
+</html>

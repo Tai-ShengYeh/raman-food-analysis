@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>重點4：數字大挑戰 — 是非題</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:16px}
+.container{max-width:600px;margin:0 auto}
+.header{text-align:center;padding:20px 0 10px}
+.kicker{font-size:12px;letter-spacing:0.15em;color:#fb923c;text-transform:uppercase;margin-bottom:6px;font-family:monospace}
+h1{font-size:21px;font-weight:900;color:#fff;margin-bottom:4px}
+.subtitle{font-size:13px;color:#94a3b8;margin-bottom:18px}
+.progress-bar{height:4px;background:#1e293b;border-radius:2px;margin-bottom:14px}
+.progress-fill{height:100%;background:linear-gradient(90deg,#fb923c,#f43f5e);border-radius:2px;transition:width .4s}
+.score-badge{display:inline-block;background:#1e293b;border:1px solid #334155;border-radius:20px;padding:4px 14px;font-size:13px;color:#94a3b8;margin-bottom:16px}
+.question-card{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:24px 20px;margin-bottom:14px;text-align:center}
+.q-num{font-size:11px;color:#fb923c;font-family:monospace;letter-spacing:0.1em;margin-bottom:10px;text-align:left}
+.claim{font-size:17px;font-weight:700;line-height:1.55;color:#f1f5f9;margin-bottom:20px;text-align:left;background:rgba(251,146,60,0.06);border:1px solid rgba(251,146,60,0.2);border-radius:10px;padding:14px 16px}
+.claim em{color:#fb923c;font-style:normal;font-weight:900}
+.btn-row{display:flex;gap:12px;justify-content:center;margin-bottom:0}
+.tf-btn{flex:1;max-width:160px;padding:14px 10px;border:2px solid #334155;border-radius:12px;font-size:22px;cursor:pointer;background:#0f172a;transition:all .2s;font-family:inherit}
+.tf-btn:hover:not(:disabled){transform:scale(1.04)}
+.tf-btn[data-val="true"]{color:#22c55e}
+.tf-btn[data-val="true"]:hover:not(:disabled){border-color:#22c55e;background:rgba(34,197,94,0.08)}
+.tf-btn[data-val="false"]{color:#ef4444}
+.tf-btn[data-val="false"]:hover:not(:disabled){border-color:#ef4444;background:rgba(239,68,68,0.08)}
+.tf-btn.pick-ok{border-color:#22c55e;background:rgba(34,197,94,0.15)}
+.tf-btn.pick-bad{border-color:#ef4444;background:rgba(239,68,68,0.12)}
+.tf-btn.reveal-ok{border-color:#22c55e;background:rgba(34,197,94,0.08);opacity:.7}
+.feedback{margin-top:14px;padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.6;text-align:left;display:none}
+.feedback.ok{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#86efac}
+.feedback.bad{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);color:#fca5a5}
+.next-btn{display:none;width:100%;margin-top:12px;padding:12px;background:#fb923c;border:none;border-radius:10px;font-size:15px;font-weight:700;color:#0f172a;cursor:pointer}
+.result-card{display:none;text-align:center;background:#1e293b;border:1px solid #334155;border-radius:16px;padding:28px 20px}
+.restart-btn{padding:12px 32px;background:#fb923c;border:none;border-radius:10px;font-size:15px;font-weight:700;color:#0f172a;cursor:pointer;margin-top:12px}
+.qr-section{text-align:center;margin-top:20px;padding:14px;background:#1e293b;border-radius:12px;border:1px solid #334155}
+.qr-section p{font-size:12px;color:#64748b;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="kicker">Data Check · 形成性評量</div>
+    <h1>重點4：數字大挑戰</h1>
+    <div class="subtitle">是非題 · 5 題 · 判斷以下數據陳述是「真」還是「假」</div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="pbar" style="width:0%"></div></div>
+  <div class="score-badge">得分：<span id="score">0</span> / <span id="total">5</span> ｜ 第 <span id="qnum">1</span> 題</div>
+  <div id="game-area"></div>
+  <div class="result-card" id="result">
+    <div style="font-size:48px;margin-bottom:8px" id="res-emoji">🎯</div>
+    <h2 id="res-title" style="font-size:22px;font-weight:900;color:#fff;margin-bottom:6px">完成！</h2>
+    <p id="res-msg" style="font-size:14px;color:#94a3b8;margin-bottom:16px"></p>
+    <button class="restart-btn" onclick="restart()">重新挑戰</button>
+  </div>
+  <div class="qr-section">
+    <img id="qr-img" width="120" height="120" alt="QR Code" style="border-radius:8px">
+    <p>掃描開啟此遊戲</p>
+  </div>
+</div>
+<script>
+const Qs=[
+  {q:"SERS 銀奈米星基板對 imidacloprid（農藥）的偵測下限（LOD）約比歐盟最高殘留限量（EU MRL）靈敏 <em>5,000 倍</em>。",
+   ans:true, exp:"正確。銀奈米星 SERS 的 LOD = 9.4×10⁻⁸ mg/mL；EU MRL = 5×10⁻⁴ mg/mL；比值約 5,319 倍。但要注意：此 LOD 在純溶液中測得，食品基質中實際靈敏度會降低。（PMC10820608, 2024）"},
+  {q:"用拉曼光譜 + Ridge Regression 定量橄欖油摻假，<em>酪梨油摻芥花油</em>的模型 R² (0.910) 高於橄欖油摻大豆油 (0.984)，因為前者光譜差異更大。",
+   ans:false, exp:"錯誤。橄欖油 vs 大豆油的 R² = 0.984（光譜差異大）> 酪梨油 vs 芥花油的 R² = 0.910（光譜差異小）。結論恰好相反：光譜差異越大，預測模型越準確。（PMC10304463, Food Chemistry 2022）"},
+  {q:"Raman + LDA 在實驗條件下可鑑別 E. coli、S. aureus 和 S. typhimurium，驗證準確率達約 <em>95.65%</em>。",
+   ans:true, exp:"正確。PMC11593597 報告了 LDA 驗證準確率 95.65%。但這是在純培養條件下的結果，食品基質中的鑑別效果尚未有同等級別的驗證。"},
+  {q:"SERS 銀奈米星基板在 20 個測量點的 spot-to-spot 相對標準偏差（RSD）可達 <em>7% ~ 27%</em>，代表定量重現性優於 HPLC。",
+   ans:false, exp:"錯誤。RSD 7~27% 是 SERS 定量的重大挑戰，HPLC/ELISA 的 RSD 通常 <5%。RSD 高達 27% 意味著 SERS 目前更適合定性篩選，而非精確定量分析。（PMC10820608, 2024）"},
+  {q:"拉曼光譜對橄欖油摻假的預測效果取決於兩種油的光譜差異大小：差異越大，Ridge Regression 模型 R² 越高。",
+   ans:true, exp:"正確。PMC10304463 (Food Chemistry 2022) 用實驗數據支持這個結論：橄欖油 vs 大豆油（光譜差異大）R²=0.984，而光譜相近的酪梨油 vs 芥花油只有 R²=0.910。這提示我們在設計食品鑑別應用時，要先評估樣品的光譜可分性。"},
+];
+let cur=0,score=0;
+function render(){
+  if(cur>=Qs.length){showResult();return}
+  const q=Qs[cur];
+  document.getElementById('qnum').textContent=cur+1;
+  document.getElementById('pbar').style.width=(cur/Qs.length*100)+'%';
+  let html=`<div class="question-card">
+    <div class="q-num">Q ${cur+1} / ${Qs.length}</div>
+    <div class="claim">📊 ${q.q}</div>
+    <div class="btn-row">
+      <button class="tf-btn" data-val="true" onclick="pick(true)">✅ 真</button>
+      <button class="tf-btn" data-val="false" onclick="pick(false)">❌ 假</button>
+    </div>
+    <div class="feedback" id="fb"></div>
+    <button class="next-btn" id="nb" onclick="next()">${cur===Qs.length-1?'查看結果 →':'下一題 →'}</button>
+  </div>`;
+  document.getElementById('game-area').innerHTML=html;
+}
+function pick(val){
+  const q=Qs[cur];
+  const btns=document.querySelectorAll('.tf-btn');
+  btns.forEach(b=>b.disabled=true);
+  const fb=document.getElementById('fb');
+  const nb=document.getElementById('nb');
+  const correct=(val===q.ans);
+  // Highlight correct answer
+  btns.forEach(b=>{
+    if(b.dataset.val===(q.ans?'true':'false')) b.classList.add('pick-ok');
+    else if(b.dataset.val===(val?'true':'false')&&!correct) b.classList.add('pick-bad');
+  });
+  if(correct){
+    fb.className='feedback ok';
+    fb.innerHTML='✅ 正確！'+q.exp;
+    score++;document.getElementById('score').textContent=score;
+  } else {
+    fb.className='feedback bad';
+    fb.innerHTML='❌ 這是「'+(q.ans?'真':'假')+'」！'+q.exp;
+  }
+  fb.style.display='block';nb.style.display='block';
+}
+function next(){cur++;render()}
+function showResult(){
+  document.getElementById('game-area').innerHTML='';
+  document.getElementById('pbar').style.width='100%';
+  const r=document.getElementById('result');r.style.display='block';
+  const pct=score/Qs.length;
+  document.getElementById('res-emoji').textContent=pct>=.8?'🎯':pct>=.6?'📊':'💪';
+  document.getElementById('res-title').textContent='答對 '+score+' / '+Qs.length;
+  document.getElementById('res-msg').textContent=pct>=.8?'數字掌握得非常精準！':pct>=.6?'不錯！再複習橄欖油 R² 和 RSD 的意義。':'這些數字需要多練習，建議重看投影片第 6 頁。';
+}
+function restart(){cur=0;score=0;document.getElementById('score').textContent=0;document.getElementById('result').style.display='none';render()}
+render();
+document.getElementById('qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=120x120&data='+encodeURIComponent(window.location.href);
+</script>
+</body>
+</html>
