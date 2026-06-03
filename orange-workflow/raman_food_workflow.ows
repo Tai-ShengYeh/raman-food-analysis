@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<scheme version="2.0" title="拉曼光譜食品分析工作流 (Raman Food Analysis)" description="Raman spectra of food -> view raw -> Preprocess (Cut 400-1800 cm-1, Rubberband baseline for fluorescence removal, Savitzky-Golay smoothing, Vector/SNV normalize) -> view preprocessed -> PCA + Scatter Plot, and SVM/Random Forest classification via Test &amp; Score + Confusion Matrix, plus PLS regression for adulteration %. Designed for food authentication / adulteration (e.g. edible oil). Open with Orange 3 + Orange-Spectroscopy add-on.">
+	<nodes>
+		<node id="0" name="File" qualified_name="Orange.widgets.data.owfile.OWFile" project_name="Orange3" version="" title="File (Raman2.csv)" position="(80.0, 280.0)" />
+		<node id="1" name="Spectra" qualified_name="orangecontrib.spectroscopy.widgets.owspectra.OWSpectra" project_name="Orange-Spectroscopy" version="" title="Spectra — RAW (see fluorescence)" position="(250.0, 150.0)" />
+		<node id="2" name="Preprocess Spectra" qualified_name="orangecontrib.spectroscopy.widgets.owpreprocess.OWPreprocess" project_name="Orange-Spectroscopy" version="" title="Preprocess Spectra (Raman chain)" position="(260.0, 300.0)" />
+		<node id="3" name="Spectra" qualified_name="orangecontrib.spectroscopy.widgets.owspectra.OWSpectra" project_name="Orange-Spectroscopy" version="" title="Spectra — PREPROCESSED" position="(470.0, 160.0)" />
+		<node id="4" name="PCA" qualified_name="Orange.widgets.unsupervised.owpca.OWPCA" project_name="Orange3" version="" title="PCA" position="(480.0, 300.0)" />
+		<node id="5" name="Scatter Plot" qualified_name="Orange.widgets.visualize.owscatterplot.OWScatterPlot" project_name="Orange3" version="" title="Scatter Plot (PC1 vs PC2)" position="(680.0, 230.0)" />
+		<node id="6" name="Test and Score" qualified_name="Orange.widgets.evaluate.owtestandscore.OWTestAndScore" project_name="Orange3" version="" title="Test &amp; Score (CV)" position="(700.0, 400.0)" />
+		<node id="7" name="SVM" qualified_name="Orange.widgets.model.owsvm.OWSVM" project_name="Orange3" version="" title="SVM (RBF)" position="(500.0, 440.0)" />
+		<node id="8" name="Random Forest" qualified_name="Orange.widgets.model.owrandomforest.OWRandomForest" project_name="Orange3" version="" title="Random Forest" position="(500.0, 520.0)" />
+		<node id="9" name="Confusion Matrix" qualified_name="Orange.widgets.evaluate.owconfusionmatrix.OWConfusionMatrix" project_name="Orange3" version="" title="Confusion Matrix" position="(900.0, 400.0)" />
+		<node id="10" name="PLS" qualified_name="orangecontrib.spectroscopy.widgets.owpls.OWPLS" project_name="Orange-Spectroscopy" version="" title="PLS (adulteration %)" position="(480.0, 360.0)" />
+		<node id="11" name="Data Table" qualified_name="Orange.widgets.data.owtable.OWDataTable" project_name="Orange3" version="" title="Data Table" position="(260.0, 430.0)" />
+	</nodes>
+	<links>
+		<link id="0" source_node_id="0" sink_node_id="1" source_channel="Data" sink_channel="Data" enabled="true" />
+		<link id="1" source_node_id="0" sink_node_id="2" source_channel="Data" sink_channel="Data" enabled="true" />
+		<link id="2" source_node_id="0" sink_node_id="11" source_channel="Data" sink_channel="Data" enabled="true" />
+		<link id="3" source_node_id="2" sink_node_id="3" source_channel="Preprocessed Data" sink_channel="Data" enabled="true" />
+		<link id="4" source_node_id="2" sink_node_id="4" source_channel="Preprocessed Data" sink_channel="Data" enabled="true" />
+		<link id="5" source_node_id="4" sink_node_id="5" source_channel="Transformed Data" sink_channel="Data" enabled="true" />
+		<link id="6" source_node_id="2" sink_node_id="6" source_channel="Preprocessed Data" sink_channel="Data" enabled="true" />
+		<link id="7" source_node_id="7" sink_node_id="6" source_channel="Model" sink_channel="Learner" enabled="true" />
+		<link id="8" source_node_id="8" sink_node_id="6" source_channel="Model" sink_channel="Learner" enabled="true" />
+		<link id="9" source_node_id="6" sink_node_id="9" source_channel="Evaluation Results" sink_channel="Evaluation Results" enabled="true" />
+		<link id="10" source_node_id="2" sink_node_id="10" source_channel="Preprocessed Data" sink_channel="Data" enabled="true" />
+	</links>
+	<annotations>
+		<text id="0" type="text/plain" rect="(40.0, 360.0, 250.0, 86.0)" font-family="Sans Serif" font-size="11">① File：載入 Raman2.csv
+（Mendeley ctgg7k4m5g 食用油拉曼）
+每列一個樣本；波數為欄；
+欄1=Class（油種）欄2=PeroxideValue。
+把 Class / PeroxideValue 設為 target/meta。</text>
+		<text id="1" type="text/plain" rect="(250.0, 540.0, 360.0, 140.0)" font-family="Sans Serif" font-size="11">② Preprocess Spectra（拉曼專用順序，由上而下拖入）：
+1. Spike Removal → 去宇宙射線尖峰
+2. Baseline Correction → 選「Rubber band」, Positive
+   → 去螢光背景（拉曼最關鍵步驟！）
+   （或用 Asymmetric Least Squares Smoothing）
+3. Cut → 保留指紋區 400–1800 cm⁻¹
+4. Normalize Spectra → SNV 或 Vector (L2)
+順序很重要：先去尖峰→去基線→裁切→正規化。</text>
+		<text id="2" type="text/plain" rect="(640.0, 150.0, 250.0, 70.0)" font-family="Sans Serif" font-size="11">③ 探索：PCA → Scatter Plot
+（PC1 vs PC2，顏色標 Class）
+真實結果：PC1=87.4%、橄欖油 vs 其他油自然分開。</text>
+		<text id="3" type="text/plain" rect="(890.0, 320.0, 250.0, 86.0)" font-family="Sans Serif" font-size="11">④ 分類（真偽鑑別）：Test &amp; Score 交叉驗證
+比較 SVM vs Random Forest → Confusion Matrix。
+真實結果：橄欖油 vs 其他油
+SVM 5-fold CV = 86.5%（測試集 98.5%）。</text>
+		<text id="4" type="text/plain" rect="(420.0, 320.0, 260.0, 56.0)" font-family="Sans Serif" font-size="11">⑤ 迴歸：PLS 預測過氧化價（氧化/新鮮度）。
+真實結果：全部油種 R²=0.59（被油種混淆）；
+單一 EVOO 內 R²=0.94 → 先控制油種才準。</text>
+		<text id="5" type="text/plain" rect="(250.0, 80.0, 320.0, 56.0)" font-family="Sans Serif" font-size="11">先看 RAW 光譜：拉曼常有傾斜的螢光背景（駝峰），
+這就是為什麼要做 Baseline Correction（Rubber band）。
+預處理後再看一次，背景被拉平、峰更清楚。</text>
+	</annotations>
+	<thumbnail />
+</scheme>
