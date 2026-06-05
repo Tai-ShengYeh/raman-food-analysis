@@ -71,12 +71,12 @@ fig,axes=plt.subplots(1,2,figsize=(12,4.6))
 ex = np.where(cls==1)[0][:1]  # one EVOO sample
 axes[0].plot(wl, X[ex[0]], color=CORAL, lw=1.5, label="raw (with fluorescence background)")
 axes[0].plot(wl, als_baseline(X[ex[0]]), color=INK, lw=1.5, ls="--", label="ALS baseline (fluorescence)")
-axes[0].set_title("Raman: raw spectrum has a fluorescence background", weight="bold")
+axes[0].set_title("Raw spectrum + fluorescence background", weight="bold", fontsize=11)
 axes[0].set_xlabel("Raman shift (cm⁻¹)"); axes[0].set_ylabel("Intensity"); axes[0].legend(fontsize=10)
 for c,col in [(1,CORAL),(6,TEAL),(18,GOLD),(8,GREEN)]:
     m=cls==c
     if m.sum(): axes[1].plot(wlf, snv(Xf[m]).mean(0), color=col, lw=1.6, label=OIL[c])
-axes[1].set_title("After baseline + cut(400–1800) + SNV: clean fingerprints", weight="bold")
+axes[1].set_title("After baseline + cut + SNV: clean fingerprints", weight="bold", fontsize=11)
 axes[1].set_xlabel("Raman shift (cm⁻¹)"); axes[1].set_ylabel("SNV intensity"); axes[1].legend(fontsize=9)
 plt.tight_layout(); plt.savefig(IMG/"raman_fig1_baseline.png",dpi=150); plt.close(); print("[OK] fig1 baseline")
 
