@@ -43,11 +43,13 @@ File (Raman2.csv)
       4. Normalize Spectra → SNV … 消除強度/散射差異
         ├─ Spectra ……………… 看預處理後：背景被拉平、峰變清楚
         ├─ PCA → Scatter Plot … 真偽/油種分群
-        ├─ Test & Score ← SVM / Random Forest → Confusion Matrix … 分類
-        └─ PLS ………………………… 迴歸（過氧化價＝氧化/新鮮度）
+        ├─ Test & Score ← SVM / Random Forest → Confusion Matrix … 分類（target=Class）
+        └─ PLS（Model 類別）→ Test & Score ………… 迴歸 R²/RMSE（target=PeroxideValue）
 ```
 
 > **為什麼拉曼跟 NIR 不一樣？** 拉曼光譜常被**螢光背景**淹沒，所以「去基線（Baseline Correction / Rubber band 或 Asymmetric Least Squares）」是拉曼**最關鍵**的預處理步驟——這正是 Orange Spectroscopy 的招牌功能。NIR 通常不需要這步。
+
+> ⚠️ **PLS widget 用哪個？** 請用 **Model 類別**的 PLS widget（`Orange.widgets.model.owpls`）。Spectroscopy 外掛裡那顆 PLS 已被標示 deprecated（會在未來版本移除）。Model 類別的 PLS 是「學習器（Learner）」，所以接法跟 SVM/RF 一樣：PLS 的 **Learner 輸出 → Test & Score 的 Learner 輸入**，再由 Test & Score 給出交叉驗證的 R²/RMSE（記得把 target 設成 PeroxideValue）。
 
 ---
 
