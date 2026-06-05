@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>拉曼光譜 × 食品分析 — 從分子指紋到 SERS</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
+
+<style>
+@font-face{font-family:'GenSeki';src:url('assets/fonts/GenSekiGothic2TW-H.otf') format('opentype');font-weight:900;font-display:swap;}
+@font-face{font-family:'GenSeki';src:url('assets/fonts/GenSekiGothic2TW-B.otf') format('opentype');font-weight:700;font-display:swap;}
+@font-face{font-family:'GenSeki';src:url('assets/fonts/GenSekiGothic2TW-M.otf') format('opentype');font-weight:500;font-display:swap;}
+
+:root{
+  --paper:#FAF7EE; --paper2:#F2EDDC; --ink:#1A1A1A; --ink-soft:#403a30;
+  --teal:#0E7C7B; --coral:#E36414; --gold:#C8941F; --line:#D9D2BE;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;font-family:'GenSeki','Noto Sans TC',system-ui,sans-serif;font-weight:500;
+  color:var(--ink);background:var(--paper);line-height:1.65;font-size:18px;}
+h1,h2,h3{font-weight:900;line-height:1.2;letter-spacing:.01em;}
+a{color:var(--teal);text-decoration:none;} a:hover{text-decoration:underline;}
+code,pre,kbd{font-family:'JetBrains Mono','Fira Code',Consolas,monospace;}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(26,26,26,.96);backdrop-filter:blur(6px);
+  display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:10px 22px;}
+nav .brand{color:#fff;font-weight:900;font-size:18px;margin-right:auto;}
+nav .brand b{color:var(--gold);}
+nav a{color:#e9e4d6;font-weight:700;font-size:14.5px;padding:6px 11px;border-radius:8px;}
+nav a:hover{background:rgba(255,255,255,.12);text-decoration:none;color:#fff;}
+
+.hero{background:var(--ink);color:var(--paper);padding:84px 22px 70px;text-align:center;}
+.hero h1{font-size:clamp(34px,6vw,66px);margin:0 0 14px;}
+.hero h1 .accent{color:var(--coral);}
+.hero p.sub{font-size:clamp(17px,2.4vw,24px);color:#cfc8b6;font-weight:700;max-width:780px;margin:0 auto 28px;}
+.hero .facts{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+.hero .fact{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:14px;
+  padding:14px 20px;min-width:150px;}
+.hero .fact b{display:block;font-size:30px;color:var(--gold);font-weight:900;}
+.hero .fact span{font-size:14px;color:#cfc8b6;font-weight:700;}
+
+main{max-width:1080px;margin:0 auto;padding:0 22px;}
+section{padding:64px 0 8px;scroll-margin-top:64px;border-top:1px solid var(--line);}
+section:first-of-type{border-top:none;}
+.kicker{color:var(--coral);font-weight:900;font-size:15px;letter-spacing:.14em;text-transform:uppercase;}
+section h2{font-size:clamp(28px,4vw,42px);margin:6px 0 8px;}
+section h3{font-size:23px;margin:34px 0 10px;color:var(--teal);}
+p{margin:14px 0;}
+.lead{font-size:20px;color:var(--ink-soft);}
+
+.grid{display:grid;gap:18px;margin:24px 0;}
+.g4{grid-template-columns:repeat(4,1fr);} .g3{grid-template-columns:repeat(3,1fr);} .g2{grid-template-columns:repeat(2,1fr);}
+.card{background:var(--paper2);border:1px solid var(--line);border-radius:16px;padding:22px;}
+.card h4{margin:0 0 8px;font-size:19px;font-weight:900;color:var(--teal);}
+.card.coral h4{color:var(--coral);} .card.gold h4{color:var(--gold);}
+.card .icon{font-size:1.9rem;line-height:1;margin-bottom:8px;}
+.card ul{margin:8px 0 0;padding-left:1.1em;} .card li{margin:4px 0;font-size:16px;}
+.card .big{font-size:40px;font-weight:900;color:var(--coral);line-height:1;margin:4px 0 6px;}
+.card .note{font-size:14px;color:var(--ink-soft);margin-top:10px;}
+
+figure{margin:26px 0;background:var(--paper2);border:1px solid var(--line);border-radius:16px;
+  padding:14px;text-align:center;}
+figure img{max-width:100%;height:auto;border-radius:8px;display:block;margin:0 auto;}
+figure svg{max-width:100%;height:auto;display:block;margin:0 auto;}
+figcaption{font-size:15px;color:var(--ink-soft);font-weight:700;margin-top:10px;}
+figcaption b{color:var(--coral);}
+
+.callout{border-left:6px solid var(--teal);background:var(--paper2);border-radius:0 14px 14px 0;
+  padding:18px 22px;margin:24px 0;font-size:18px;}
+.callout.coral{border-color:var(--coral);} .callout.gold{border-color:var(--gold);}
+.callout .tag{font-weight:900;color:var(--teal);} .callout.coral .tag{color:var(--coral);} .callout.gold .tag{color:var(--gold);}
+
+.video-wrap{background:var(--ink);border-radius:16px;overflow:hidden;margin:24px 0;border:1px solid var(--line);}
+.video-wrap video{width:100%;display:block;background:#000;}
+.video-wrap iframe{width:100%;aspect-ratio:16/9;display:block;border:0;background:#000;}
+.video-note a{color:var(--gold);}
+.video-note{padding:12px 18px;color:#cfc8b6;font-size:14px;font-weight:700;background:var(--ink);}
+
+pre{background:#1f2329;border-radius:14px;padding:0;margin:18px 0;overflow:auto;border:1px solid #2c313a;}
+pre code{display:block;padding:20px 22px;font-size:14.5px;line-height:1.6;background:transparent;}
+.codecap{font-size:14px;font-weight:700;color:var(--ink-soft);margin:18px 0 -8px;}
+details{background:var(--paper2);border:1px solid var(--line);border-radius:14px;padding:6px 18px;margin:14px 0;}
+summary{font-weight:900;cursor:pointer;padding:10px 0;color:var(--teal);}
+
+table{width:100%;border-collapse:collapse;margin:24px 0;font-size:16.5px;background:var(--paper2);
+  border-radius:14px;overflow:hidden;}
+th,td{padding:13px 16px;text-align:left;border-bottom:1px solid var(--line);}
+th{background:var(--teal);color:#fff;font-weight:900;}
+tr:last-child td{border-bottom:none;}
+td b.teal{color:var(--teal);} td b.coral{color:var(--coral);} td b.gold{color:var(--gold);}
+td.yes{color:var(--teal);font-weight:900;} td.no{color:var(--coral);font-weight:900;}
+
+.flow{background:#1f2329;color:#e9e4d6;border-radius:14px;padding:20px;overflow:auto;font-size:13.5px;line-height:1.5;}
+.btnrow{display:flex;gap:12px;flex-wrap:wrap;margin:20px 0;}
+.btn{background:var(--teal);color:#fff;font-weight:900;padding:12px 20px;border-radius:12px;font-size:15px;}
+.btn.coral{background:var(--coral);} .btn.gold{background:var(--gold);} .btn:hover{text-decoration:none;opacity:.92;}
+
+footer{background:var(--ink);color:#cfc8b6;padding:40px 22px;margin-top:60px;text-align:center;font-size:14px;}
+footer b{color:var(--gold);}
+.eq{background:var(--paper2);border:1px dashed var(--teal);border-radius:12px;padding:14px 18px;margin:18px 0;text-align:center;font-size:20px;}
+.steps{counter-reset:s;list-style:none;padding:0;}
+.steps li{position:relative;padding:10px 0 10px 46px;border-bottom:1px solid var(--line);}
+.steps li:last-child{border-bottom:none;}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:8px;width:30px;height:30px;
+  background:var(--teal);color:#fff;border-radius:50%;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:15px;}
+
+@media(max-width:760px){.g4,.g3,.g2{grid-template-columns:1fr;} body{font-size:17px;}}
+/* === bright-white theme === */
+:root{--paper:#FFFFFF;--cover:#119C9A;}
+.hero{background:var(--cover);}
+.hero p.sub{color:rgba(255,255,255,.9);}
+.hero .fact span{color:rgba(255,255,255,.82);}
+.hero .fact b{color:#FFDE7A;}
+footer{background:var(--cover);color:rgba(255,255,255,.82);}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">拉曼光譜 × 食品分析 <b>·</b> Raman / SERS</span>
+  <a href="#why">為什麼</a>
+  <a href="#principle">原理</a>
+  <a href="#sers">SERS</a>
+  <a href="#apps">應用域</a>
+  <a href="#numbers">定量</a>
+  <a href="#portable">可攜式</a>
+  <a href="#challenges">挑戰</a>
+  <a href="#orange">Orange</a>
+  <a href="#refs">文獻</a>
+</nav>
+
+<header class="hero">
+  <h1>拉曼光譜，讀出食品的<span class="accent">分子指紋</span></h1>
+  <p class="sub">不破壞樣品、不怕水分子、可透過包裝掃描——<br>從散射原理到 SERS 熱點增強，再到真實食用油的真偽與氧化鑑別。</p>
+  <div class="facts">
+    <div class="fact"><b>10¹⁴</b><span>SERS 最高訊號增益</span></div>
+    <div class="fact"><b>4</b><span>食品安全應用域</span></div>
+    <div class="fact"><b>0.984</b><span>橄欖油摻假 R²</span></div>
+    <div class="fact"><b>86.5%</b><span>油品真偽 CV 準確率</span></div>
+  </div>
+</header>
+
+<main>
+
+<!-- ===== WHY ===== -->
+<section id="why">
+  <span class="kicker">為什麼是拉曼</span>
+  <h2>水不干擾 + 透包裝掃描</h2>
+  <p class="lead">拉曼光譜（Raman Spectroscopy）量測分子的<b>非彈性散射</b>，得到化學鍵振動形成的「分子指紋」。
+  和紅外光譜（FTIR）相比，它有兩個對食品分析特別關鍵的優勢：水幾乎不干擾、雷射能穿透透明包裝——讓食品在不開封、不前處理的情況下直接量測。</p>
+  <div class="grid g3">
+    <div class="card"><div class="icon">💧</div><h4>水不干擾</h4>水的 O–H 振動極化率變化極小，散射截面比多數有機官能基低 3~5 個數量級，<b>水溶液可直接分析</b>。</div>
+    <div class="card"><div class="icon">📦</div><h4>透包裝測量</h4>785／1064 nm 雷射可穿透 PET、玻璃、PE，散射光同一物鏡採集，<b>不需開封</b>。</div>
+    <div class="card coral"><div class="icon">⚠️</div><h4>但是…</h4>複雜食品（橄欖油、蜂蜜、香料）含高螢光有機物，可能把 Raman 訊號完全蓋過——這是拉曼的主要罩門。</div>
+  </div>
+  <table>
+    <tr><th>特性</th><th>FTIR</th><th>拉曼 Raman</th></tr>
+    <tr><td>水分子干擾</td><td class="no">⚠ 強烈吸收（OH 3400 cm⁻¹ 蓋訊號）</td><td class="yes">✓ 幾乎不干擾</td></tr>
+    <tr><td>透包裝測量</td><td class="no">✗ 紅外線被多數材料吸收</td><td class="yes">✓ 可穿透塑膠／玻璃</td></tr>
+    <tr><td>樣品前處理</td><td>通常需要（乾燥、壓片）</td><td class="yes">✓ 液體／固體／粉末直接測</td></tr>
+    <tr><td>螢光干擾</td><td class="yes">✓ 不受影響</td><td class="no">⚠ 有機物螢光可蓋過訊號</td></tr>
+    <tr><td>靈敏度</td><td>中等</td><td><b class="teal">中等（SERS 後 10⁷~10¹⁴×↑）</b></td></tr>
+  </table>
+  <p class="codecap" style="margin-bottom:0">來源：PMC10707828（2023 peer-reviewed review）。</p>
+  <div class="callout"><span class="tag">本課路線：</span>
+    先看 <b>散射原理</b> 如何生出指紋，再看 <b>SERS</b> 如何把微弱訊號放大百億倍，接著盤點 <b>四大應用域</b> 與真實數字，最後親手用 <b>Orange</b> 跑一遍食用油鑑別。</div>
+</section>
+
+<!-- ===== PRINCIPLE ===== -->
+<section id="principle">
+  <span class="kicker">原理 · 非彈性散射</span>
+  <h2>每個分子的唯一指紋從哪來</h2>
+  <p class="lead">入射光子打到分子，絕大多數彈性散射（Rayleigh，波長不變）；極少數（約 1/10⁷）把能量交給分子振動而發生<b>非彈性散射</b>。
+  散射光能量減少的部分稱為 <b>Stokes Raman</b>，其能量差正好等於某個化學鍵的振動能量——於是一張光譜就是一組分子結構指紋。</p>
+
+  <figure>
+    <svg viewBox="0 0 760 300" width="760" role="img" aria-label="拉曼散射能階圖與光譜">
+      <!-- energy-level diagram (left) -->
+      <text x="20" y="26" fill="#403a30" font-size="14" font-weight="700" font-family="'Noto Sans TC',sans-serif">能階躍遷</text>
+      <!-- ground / vibrational / virtual states -->
+      <line x1="20" y1="250" x2="190" y2="250" stroke="#1A1A1A" stroke-width="2"/>
+      <text x="20" y="268" fill="#403a30" font-size="12">基態 v=0</text>
+      <line x1="20" y1="210" x2="190" y2="210" stroke="#403a30" stroke-width="1.4" stroke-dasharray="4,3"/>
+      <text x="20" y="204" fill="#403a30" font-size="11">振動態 v=1</text>
+      <rect x="20" y="78" width="170" height="22" rx="5" fill="rgba(14,124,123,.08)" stroke="#0E7C7B" stroke-dasharray="4,3"/>
+      <text x="30" y="93" fill="#0E7C7B" font-size="11" font-weight="700">虛激發態 (virtual state)</text>
+      <!-- Rayleigh -->
+      <line x1="50" y1="250" x2="50" y2="100" stroke="#0E7C7B" stroke-width="2.4" marker-end="url(#ah)"/>
+      <line x1="64" y1="100" x2="64" y2="250" stroke="#0E7C7B" stroke-width="2" opacity=".45" marker-end="url(#ah)"/>
+      <text x="40" y="290" fill="#0E7C7B" font-size="11">Rayleigh</text>
+      <!-- Stokes -->
+      <line x1="100" y1="250" x2="100" y2="100" stroke="#0E7C7B" stroke-width="2.4" marker-end="url(#ah)"/>
+      <line x1="114" y1="100" x2="114" y2="210" stroke="#E36414" stroke-width="3" marker-end="url(#ac)"/>
+      <text x="92" y="290" fill="#E36414" font-size="11" font-weight="700">Stokes</text>
+      <!-- Anti-Stokes -->
+      <line x1="150" y1="210" x2="150" y2="100" stroke="#C8941F" stroke-width="2" marker-end="url(#ag)"/>
+      <line x1="164" y1="100" x2="164" y2="250" stroke="#C8941F" stroke-width="2" marker-end="url(#ag)"/>
+      <text x="135" y="306" fill="#C8941F" font-size="11">Anti-Stokes</text>
+      <!-- spectrum (right) -->
+      <text x="430" y="26" fill="#403a30" font-size="14" font-weight="700" font-family="'Noto Sans TC',sans-serif">拉曼光譜（Stokes 側）</text>
+      <line x1="430" y1="250" x2="740" y2="250" stroke="#403a30" stroke-width="1.5"/>
+      <line x1="430" y1="50" x2="430" y2="250" stroke="#403a30" stroke-width="1.5"/>
+      <text x="560" y="282" fill="#403a30" font-size="11">Raman 偏移 (cm⁻¹)</text>
+      <line x1="478" y1="250" x2="478" y2="140" stroke="#E36414" stroke-width="10" stroke-linecap="round"/>
+      <text x="462" y="130" fill="#E36414" font-size="11">800</text>
+      <line x1="540" y1="250" x2="540" y2="90" stroke="#E36414" stroke-width="10" stroke-linecap="round"/>
+      <text x="522" y="80" fill="#E36414" font-size="11">1003</text>
+      <line x1="612" y1="250" x2="612" y2="165" stroke="#E36414" stroke-width="8" stroke-linecap="round"/>
+      <text x="596" y="155" fill="#E36414" font-size="11">1340</text>
+      <line x1="684" y1="250" x2="684" y2="110" stroke="#E36414" stroke-width="9" stroke-linecap="round"/>
+      <text x="668" y="100" fill="#E36414" font-size="11">1601</text>
+      <text x="470" y="218" fill="#0E7C7B" font-size="12" font-weight="700">峰位 = 振動模式 = 分子指紋</text>
+      <defs>
+        <marker id="ah" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#0E7C7B"/></marker>
+        <marker id="ac" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#E36414"/></marker>
+        <marker id="ag" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#C8941F"/></marker>
+      </defs>
+    </svg>
+    <figcaption>左：光子激發到「虛激發態」再落下。落回 v=1 即 <b>Stokes</b>（能量損失、紅移）。右：每個峰位對應一種振動模式，整組峰就是<b>分子的唯一指紋</b>。</figcaption>
+  </figure>
+
+  <div class="eq">$\Delta\tilde{\nu}\ (\text{cm}^{-1}) = \dfrac{1}{\lambda_{\text{laser}}} - \dfrac{1}{\lambda_{\text{scatter}}}$ &nbsp;—&nbsp; Raman 偏移只反映分子結構，與雷射波長無關</div>
+
+  <table>
+    <tr><th>散射類型</th><th>能量變化</th><th>相對強度</th></tr>
+    <tr><td>Rayleigh（彈性）</td><td>無（同波長）</td><td>~ 1</td></tr>
+    <tr><td><b class="coral">Stokes Raman</b></td><td>損失（紅移）</td><td>~ 10⁻⁷</td></tr>
+    <tr><td>Anti-Stokes Raman</td><td>獲得（藍移）</td><td>≪ 10⁻⁷</td></tr>
+  </table>
+  <div class="callout"><span class="tag">核心觀念：</span>
+    Stokes 訊號雖只有入射光的千萬分之一，但<b>峰的位置</b>由化學鍵決定、不受雷射波長影響——這就是拉曼能當「分子指紋」的根本原因。</div>
+</section>
+
+<!-- ===== SERS ===== -->
+<section id="sers">
+  <span class="kicker">SERS · 表面增強拉曼</span>
+  <h2>熱點把訊號放大 10⁷ ~ 10¹⁴ 倍</h2>
+  <p class="lead">天然 Raman 訊號太弱，難以偵測微量成分。把分析物吸附到奈米金屬顆粒之間的<b>「熱點」(hot spot)</b> 間隙，
+  局部電磁場劇烈集中，可把訊號放大 7 到 14 個數量級——這就是表面增強拉曼（Surface-Enhanced Raman Spectroscopy）。</p>
+
+  <figure>
+    <svg viewBox="0 0 620 260" width="560" role="img" aria-label="SERS 熱點示意">
+      <defs>
+        <radialGradient id="hot" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#E36414" stop-opacity=".9"/>
+          <stop offset="45%" stop-color="#E36414" stop-opacity=".35"/>
+          <stop offset="100%" stop-color="#E36414" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="em" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#0E7C7B" stop-opacity=".4"/>
+          <stop offset="100%" stop-color="#0E7C7B" stop-opacity="0"/>
+        </radialGradient>
+        <marker id="al" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#0E7C7B"/></marker>
+        <marker id="as" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#E36414"/></marker>
+      </defs>
+      <ellipse cx="210" cy="150" rx="95" ry="80" fill="url(#em)"/>
+      <ellipse cx="340" cy="150" rx="95" ry="80" fill="url(#em)"/>
+      <ellipse cx="275" cy="150" rx="34" ry="24" fill="url(#hot)"/>
+      <circle cx="210" cy="150" r="54" fill="#C8941F" opacity=".85" stroke="#C8941F"/>
+      <text x="210" y="146" fill="#fff" font-size="13" text-anchor="middle" font-weight="900">Au</text>
+      <text x="210" y="163" fill="#fff" font-size="10" text-anchor="middle">奈米金</text>
+      <circle cx="340" cy="150" r="54" fill="#9aa0a6" opacity=".85" stroke="#9aa0a6"/>
+      <text x="340" y="146" fill="#fff" font-size="13" text-anchor="middle" font-weight="900">Ag</text>
+      <text x="340" y="163" fill="#fff" font-size="10" text-anchor="middle">奈米銀</text>
+      <rect x="238" y="112" width="74" height="24" rx="6" fill="rgba(227,100,20,.18)" stroke="#E36414"/>
+      <text x="275" y="129" fill="#E36414" font-size="11" text-anchor="middle" font-weight="900">HOT SPOT</text>
+      <circle cx="275" cy="158" r="6" fill="#C8941F"/>
+      <text x="275" y="186" fill="#403a30" font-size="11" text-anchor="middle">分析物分子</text>
+      <line x1="60" y1="70" x2="150" y2="120" stroke="#0E7C7B" stroke-width="2.4" marker-end="url(#al)"/>
+      <text x="40" y="62" fill="#0E7C7B" font-size="12" font-weight="700">雷射激發</text>
+      <line x1="300" y1="118" x2="380" y2="55" stroke="#E36414" stroke-width="2.4" marker-end="url(#as)"/>
+      <text x="385" y="50" fill="#E36414" font-size="12" font-weight="700">SERS 訊號</text>
+      <rect x="430" y="78" width="172" height="92" rx="10" fill="rgba(227,100,20,.06)" stroke="#E36414"/>
+      <text x="446" y="104" fill="#E36414" font-size="13" font-weight="900">增強因子 (EF)</text>
+      <text x="446" y="130" fill="#1A1A1A" font-size="20" font-weight="900">10⁷ ~ 10¹⁴</text>
+      <text x="446" y="152" fill="#403a30" font-size="11">電磁增強主導 ≈ 10¹⁰~10¹¹</text>
+    </svg>
+    <figcaption>分析物落在兩顆奈米金屬之間的間隙時，電場集中形成 <b>熱點</b>，把微弱 Raman 訊號放大百億倍。電磁增強（EM）是主要機制，化學增強（電荷轉移）為次要。</figcaption>
+  </figure>
+
+  <div class="eq">$\mathrm{EF} = \dfrac{I_{\text{SERS}}/N_{\text{surf}}}{I_{\text{RS}}/N_{\text{bulk}}}$ &nbsp;—&nbsp; 增強因子：表面單分子訊號相對於體相分子的倍數</div>
+
+  <div class="grid g3">
+    <div class="card"><h4>常用奈米基板</h4>
+      <ul><li><b>AgNP / 奈米星</b>：增強最強，但易氧化</li><li><b>AuNP / 奈米棒</b>：化學穩定、生物相容</li><li><b>Au-Ag 雙金屬</b>：結合兩者，近年主流</li></ul></div>
+    <div class="card coral"><div class="big">7~27%</div><h4>RSD 重現性警示</h4>銀奈米星基板 spot-to-spot 相對標準偏差高達 7–27%（20 測點），熱點分布不均是核心瓶頸。</div>
+    <div class="card gold"><h4>機制拆解</h4>
+      <ul><li>電磁增強 EF ≈ 10¹⁰~10¹¹（主要）</li><li>化學增強 EF ≈ 10¹~10²（次要）</li><li>兩者相乘 → 總 EF 10⁷~10¹⁴</li></ul></div>
+  </div>
+  <p class="codecap" style="margin-bottom:0">來源：PMC11989198（2025）· S0924224425001311（Trends Food Sci Technol, 2025）· PMC10820608（MDPI Sensors, 2024）。</p>
+</section>
+
+<!-- ===== APPS ===== -->
+<section id="apps">
+  <span class="kicker">應用 · 2024 系統性綜述</span>
+  <h2>四大食品安全應用域</h2>
+  <p class="lead">MDPI Nanomaterials 的系統性綜述（PMC11547707, 2024）把奈米材料 SERS 在食品安全的應用整理成四個明確分類。
+  每個域都有亮眼的偵測下限，但也都附帶一個共同的提醒：多數數字是在純溶液中測得的。</p>
+  <div class="grid g4">
+    <div class="card"><div class="icon">🧪</div><h4>① 生化汙染物</h4>
+      <ul><li>農藥 imidacloprid LOD 9.4×10⁻⁸ mg/mL</li><li>黴菌毒素 DON 0.053 fg/mL</li><li>重金屬離子（汞、鉛）</li></ul>
+      <p class="note">⚠ 多數 LOD 在緩衝液測得，食品基質會顯著降低表現。</p></div>
+    <div class="card coral"><div class="icon">🦠</div><h4>② 食源性病原菌</h4>
+      <ul><li>Raman + LDA 鑑別 E. coli、S. aureus</li><li>LDA 驗證準確率 95.65%</li><li>PCA 可分群多種菌</li></ul>
+      <p class="note">⚠ 僅純培養驗證；食品基質中尚未確立。</p></div>
+    <div class="card gold"><div class="icon">🫒</div><h4>③ 食品鑑別／品管</h4>
+      <ul><li>橄欖油摻假 R²=0.984（vs 大豆油）</li><li>酪梨油 vs 芥花油 R²=0.910</li><li>蜂蜜來源、酒類品管</li></ul>
+      <p class="note">光譜差異越大 → 模型越準。</p></div>
+    <div class="card"><div class="icon">📦</div><h4>④ 包材安全</h4>
+      <ul><li>透包裝偵測遷移汙染物</li><li>不開封分析接觸面</li><li>冷鏈中包材完整性</li></ul>
+      <p class="note">最能發揮「透包裝掃描」優勢的應用。</p></div>
+  </div>
+  <div class="callout coral"><span class="tag">應用心法：</span>
+    SERS 給的是<b>篩選用的指紋訊號</b>，搭配 PCA／LDA／PLS 等化學計量學才能把指紋變成判讀。產地溯源、品種鑑別、摻偽偵測——拉曼給指紋，模型給答案。</div>
+</section>
+
+<!-- ===== NUMBERS ===== -->
+<section id="numbers">
+  <span class="kicker">數字說話</span>
+  <h2>農藥 5000× EU 標準；橄欖油摻假 R²=0.984</h2>
+  <p class="lead">兩個最具代表性的定量成果：SERS 對單一農藥的偵測下限比歐盟最高殘留限量靈敏約五千倍；
+  而拉曼配上脊迴歸（Ridge Regression），對食用油摻假的解釋力可達 R²=0.984。</p>
+  <div class="grid g2">
+    <div class="card"><h4>🌿 農藥殘留（SERS 銀奈米星）</h4>
+      <table style="margin:14px 0 6px;font-size:15px">
+        <tr><th>EU MRL</th><th>SERS LOD</th></tr>
+        <tr><td>5×10⁻⁴ mg/mL</td><td><b class="teal">9.4×10⁻⁸ mg/mL</b></td></tr>
+      </table>
+      <div class="big" style="text-align:center">~5,000×</div>
+      <p class="note" style="text-align:center">比 EU MRL 靈敏（imidacloprid）</p>
+      <p class="note">⚠ LOD 用 SNR=2:1（非 IUPAC 3:1）且在純溶液測得。來源：PMC10820608（2024）。</p></div>
+    <div class="card">
+      <h4>🫒 食用油摻假定量（Raman + Ridge）</h4>
+      <canvas id="oilChart" style="max-height:240px;margin-top:8px"></canvas>
+      <p class="note">橄欖油 vs 大豆油 R²=0.984；酪梨油 vs 芥花油 R²=0.910。光譜差異越大 → 模型越準。來源：PMC10304463（Food Chemistry, 2022）。</p></div>
+  </div>
+</section>
+
+<!-- ===== PORTABLE ===== -->
+<section id="portable">
+  <span class="kicker">可攜式拉曼</span>
+  <h2>從實驗室走進現場</h2>
+  <p class="lead">手持式拉曼儀（&lt; 500 g、電池供電、免光學平台）搭配可彎曲的軟性 SERS 基板，
+  讓檢測能在超市貨架、海關查驗、農場採樣與生產線上即採即測。</p>
+  <table>
+    <tr><th>特性</th><th>桌上型</th><th>手持式</th></tr>
+    <tr><td>靈敏度</td><td><b class="teal">高</b></td><td>中（進步中）</td></tr>
+    <tr><td>重現性</td><td class="yes">✓ 穩定</td><td class="no">⚠ 易受環境干擾</td></tr>
+    <tr><td>部署成本</td><td class="no">高（需實驗室環境）</td><td class="yes">✓ 低</td></tr>
+    <tr><td>使用門檻</td><td class="no">需專業操作員</td><td class="yes">✓ 簡化介面</td></tr>
+    <tr><td>監管接受度</td><td class="yes">✓ 成熟</td><td class="no">⚠ 尚無統一標準</td></tr>
+  </table>
+  <div class="grid g2">
+    <div class="card"><h4>📄 軟性 SERS 基板</h4>
+      <ul><li><b>紙基</b>：浸泡／滴加 → 農藥、抗生素</li><li><b>黏膠薄膜</b>：擦拭採樣 → 表面農藥</li><li><b>複合薄膜</b>：貼覆食品表面 → 水果農藥</li></ul>
+      <p class="note">大幅減少前處理時間，可現場即測。</p></div>
+    <div class="card gold"><h4>⚡ 發展趨勢 2024–2025</h4>
+      <ul><li>AI + Raman：深度學習提升複雜基質辨識</li><li>晶片整合（LOC）：感測器嵌入包裝</li><li>多模態：Raman + NIR + 機器視覺三合一</li></ul>
+      <p class="note">諾如病毒 LOD 0.76 fg/mL（PBS 條件）。來源：PMC11989198（2025）。</p></div>
+  </div>
+</section>
+
+<!-- ===== CHALLENGES ===== -->
+<section id="challenges">
+  <span class="kicker">誠實面對現況</span>
+  <h2>三大瓶頸：實驗室數字 ≠ 現場規格</h2>
+  <p class="lead">看到漂亮的偵測下限，先別急著相信。SERS／可攜式拉曼目前仍有三個結構性限制，
+  決定了它的正確定位是「快篩工具」，而非取代 HPLC／ELISA 的確認方法。</p>
+  <div class="grid g3">
+    <div class="card coral"><div class="icon">🧫</div><h4>① 食品基質干擾</h4>
+      <ul><li>漂亮 LOD 多在純緩衝液或標準品提取液測得</li><li>真實食品含螢光物質、競爭吸附分子</li><li>基質效應使實際靈敏度降 1–3 個數量級</li></ul></div>
+    <div class="card coral"><div class="icon">🎲</div><h4>② 重現性瓶頸</h4>
+      <ul><li>熱點分布本質不均勻</li><li>spot-to-spot RSD 高達 27%（HPLC/ELISA &lt;5%）</li><li>現階段適合定性篩選，非精確定量</li></ul></div>
+    <div class="card coral"><div class="icon">⚖️</div><h4>③ 監管框架缺口</h4>
+      <ul><li>SERS 尚無法作官方執法依據</li><li>EU／FDA／Codex 均無驗收標準</li><li>須搭配 HPLC／ELISA 做確認</li></ul></div>
+  </div>
+  <div class="callout gold"><span class="tag">帶走這一句話：</span>
+    拉曼光譜（SERS）是食品分析的重要未來方向——但看到漂亮的偵測下限，先問三件事：<b>這是在食品基質裡測的嗎？重現性如何？監管認可了嗎？</b></div>
+</section>
+
+<!-- ===== ORANGE ===== -->
+<section id="orange">
+  <span class="kicker">不寫程式的版本 · 動手實作</span>
+  <h2>用 Orange Data Mining 親手跑食用油鑑別</h2>
+  <p class="lead">課堂可用 <b>Orange</b> 的拖拉式 widget，零程式碼重現整條拉曼分析流程。
+  用真實開源資料（215 支食用油、15 種油、1044 波段），做<b>真偽鑑別</b>與<b>氧化品質預測</b>。</p>
+
+  <div class="video-wrap">
+    <video controls preload="metadata" poster="orange-workflow/figures/raman_fig2_pca.png">
+      <source src="orange-workflow/video/raman_orange_workflow_zh.mp4" type="video/mp4">
+    </video>
+    <div class="video-note">🎬 教學影片 · 中文旁白約 3.4 分 · 導覽整個 Orange 工作流</div>
+  </div>
+
+  <h3>拉曼專用的預處理順序</h3>
+  <p>拉曼最關鍵的一步是 <b>去基線（Baseline Correction）</b>——拉曼光譜常被傾斜的螢光背景駝峰淹沒，這是近紅外光譜通常不需要的步驟。</p>
+  <div class="flow"><pre style="margin:0;background:none;border:none;padding:0;color:#e9e4d6;">File (Raman2.csv)
+ ├─ Spectra ……………………… 看 RAW：拉曼光譜有傾斜的「螢光背景」駝峰
+ └─ Preprocess Spectra（拉曼專用順序）
+      1. Spike Removal ………………… 去宇宙射線尖峰
+      2. Baseline Correction → Rubber band … 去螢光背景  ★拉曼最關鍵
+      3. Cut → 400–1800 cm⁻¹ ………… 只留指紋區
+      4. Normalize → SNV ……………… 消除強度／散射差異
+        ├─ PCA → Scatter Plot ……… 真偽／油種分群
+        ├─ Test &amp; Score ← SVM / RF → Confusion Matrix … 分類
+        └─ PLS ………………………………… 迴歸（過氧化價＝氧化／新鮮度）</pre></div>
+
+  <h3>真實結果（可重現）</h3>
+  <div class="grid g2">
+    <figure>
+      <img src="orange-workflow/figures/raman_fig1_baseline.png" alt="去基線前後光譜">
+      <figcaption>RAW 光譜的螢光背景駝峰 + 橡皮筋基線；<b>去基線後</b>指紋峰乾淨浮現。</figcaption>
+    </figure>
+    <figure>
+      <img src="orange-workflow/figures/raman_fig2_pca.png" alt="PCA 散布圖">
+      <figcaption>PCA：PC1 解釋 <b>87.4%</b> 變異，橄欖油與其他油自然分群。</figcaption>
+    </figure>
+    <figure>
+      <img src="orange-workflow/figures/raman_fig3_authentication.png" alt="真偽鑑別混淆矩陣">
+      <figcaption>橄欖油真偽鑑別（SVM）：測試集 <b>98.5%</b>、5-fold CV <b>86.5%</b>。</figcaption>
+    </figure>
+    <figure>
+      <img src="orange-workflow/figures/raman_fig4_peroxide.png" alt="過氧化價 PLS 迴歸">
+      <figcaption>PLS 預測過氧化價：跨 15 種油 R²=0.585；<b>單一 EVOO 內 R²=0.936</b>。</figcaption>
+    </figure>
+  </div>
+
+  <table>
+    <tr><th>分析</th><th>結果</th></tr>
+    <tr><td>資料</td><td>215 樣本、15 種油、1044 波段（指紋區 708 波段）</td></tr>
+    <tr><td>PCA</td><td><b class="teal">PC1 = 87.4%</b>，PC1+PC2 = 93.8%</td></tr>
+    <tr><td>真偽鑑別（橄欖油 vs 其他，SVM）</td><td>測試集 <b class="coral">98.5%</b>、5-fold CV 86.5%（RF 90.8%）</td></tr>
+    <tr><td>氧化迴歸（PLS 過氧化價）</td><td>全部油種 R²=0.585；<b class="coral">單一 EVOO 內 R²=0.936</b></td></tr>
+  </table>
+
+  <div class="callout"><span class="tag">教學重點 · 混淆變因：</span>
+    分類（真偽）容易；定量迴歸的陷阱在「混淆變因」。跨 15 種油預測過氧化價只有 R²≈0.59，因為光譜變異被「油種」主導；
+    但<b>先控制油種、只看初榨橄欖油</b>，R² 跳到 0.94——拉曼確實能測氧化，但你得先控制混淆因子。</div>
+
+  <div class="btnrow">
+    <a class="btn" href="orange-workflow/raman_food_workflow.ows">⬇ 下載 .ows 工作流程</a>
+    <a class="btn gold" href="orange-workflow/run_raman_analysis.py">🐍 Python 對照腳本</a>
+    <a class="btn coral" href="orange-workflow/README.md">📖 圖解步驟指南</a>
+  </div>
+
+  <details>
+    <summary>▶ 如何在本機重跑</summary>
+    <pre><code class="language-bash">pip install orange3 orange-spectroscopy   # Orange 拖拉版（Python >= 3.10）
+python -m Orange.canvas                   # 開啟 Orange，File > Open 載入 .ows
+
+# 或用可重現的 Python 對照腳本
+pip install spectral scikit-learn scipy numpy matplotlib pandas
+python run_raman_analysis.py              # 讀 data/Raman2.csv，輸出 figures/ 與 results.json</code></pre>
+  </details>
+  <p class="codecap" style="margin-bottom:0">資料來源：Edible-oil Raman dataset — Mendeley Data <b>ctgg7k4m5g</b>（v2, CC BY 4.0）。</p>
+</section>
+
+<!-- ===== REFS ===== -->
+<section id="refs">
+  <span class="kicker">引用文獻</span>
+  <h2>事實來源（deep research 驗證）</h2>
+  <p class="lead">本教材的核心數字皆經 deep research workflow 驗證：107 agents、95 claims 抽取、25 驗證，
+  最終 <b>9 confirmed、14 refuted（已剔除）</b>。被 adversarial verification 否決的聲稱未納入。</p>
+  <div class="grid g2">
+    <div class="card"><h4>核心綜述</h4>
+      <ul><li><b>PMC10707828</b>（2023）Raman in food safety and quality.</li><li><b>PMC11989198</b>（2025）SERS advances；EF 10⁷~10¹⁴.</li><li><b>PMC11547707</b>（MDPI Nanomaterials, 2024）四大應用域分類.</li></ul></div>
+    <div class="card coral"><h4>定量數據來源</h4>
+      <ul><li><b>PMC10304463</b>（Food Chemistry, 2022）橄欖油摻假 R²=0.984.</li><li><b>PMC10820608</b>（MDPI Sensors, 2024）銀奈米星；imidacloprid LOD；RSD 7–27%.</li><li><b>PMC11593597</b>（2024）Raman + LDA 95.65%.</li></ul></div>
+    <div class="card gold"><h4>SERS 機制</h4>
+      <ul><li><b>S0924224425001311</b>（Trends Food Sci Technol, 2025）貴金屬奈米基板；EM 增強主導.</li><li><b>PMC11765993</b>（2024）抗光漂白與分子指紋光譜.</li></ul></div>
+    <div class="card"><h4>實作資料集</h4>
+      <ul><li><b>Mendeley ctgg7k4m5g</b>（v2, CC BY 4.0）食用油拉曼／紅外資料.</li><li>Zhao, Zhan, Xu et al., University of Nebraska–Lincoln.</li></ul></div>
+  </div>
+  <div class="callout coral"><span class="tag">帶走兩句話：</span>
+    拉曼把分子振動寫成一張可讀的指紋；SERS 把這張指紋放大百億倍，讓微量汙染現形。但別忘了問：這是在真實食品裡測的嗎？</div>
+</section>
+
+</main>
+
+<footer>
+  拉曼光譜 × 食品分析教學包 · 原理 / SERS / 四大應用域 / Orange 實作。<br>
+  實作資料：Mendeley <b>ctgg7k4m5g</b>（食用油 Raman，CC BY 4.0）；分析以 Orange + Python（scikit-learn）產生。<br>
+  事實經 deep research 驗證（107 agents · 9 confirmed · 14 refuted）。<br>
+  <a href="index.html" style="color:#FFDE7A">← 回教材中心</a> ·
+  <a href="slides.html" style="color:#FFDE7A">投影片版</a> ·
+  <a href="games/index.html" style="color:#FFDE7A">小遊戲</a>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded",function(){
+  if(window.renderMathInElement){
+    renderMathInElement(document.body,{delimiters:[{left:"$",right:"$",display:false}]});
+  }
+  if(window.hljs){hljs.highlightAll();}
+  var ctx=document.getElementById('oilChart');
+  if(ctx&&window.Chart){
+    new Chart(ctx,{type:'bar',
+      data:{labels:['橄欖油 vs 大豆油','酪梨油 vs 芥花油'],
+        datasets:[{label:'Ridge Regression R²',data:[0.984,0.910],
+          backgroundColor:['rgba(14,124,123,.22)','rgba(227,100,20,.22)'],
+          borderColor:['#0E7C7B','#E36414'],borderWidth:2,borderRadius:8}]},
+      options:{responsive:true,maintainAspectRatio:true,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'R² = '+c.raw}}},
+        scales:{y:{min:0.85,max:1.0,title:{display:true,text:'R²'}},x:{grid:{display:false}}}}});
+  }
+});
+</script>
+</body>
+</html>
